@@ -1,0 +1,32 @@
+{
+    "AdminLogin":
+    {
+        "mobileNumber":"9819228963",
+        "OTP":"1234",
+        "emailId":"augmonttest@gmail.com"
+    },
+    "AppraiserLogin":
+    {
+        "mobileNumber":"8767002000",
+        "OTP":"1234",
+        "emailId":"roshan.app@yopmail.com"
+    }, 
+    "PartnerLogin":
+    {
+        "mobileNumber":"8767002003",
+        "OTP":"1234",
+        "emailId":"roshan.partner@yopmail.com"
+    },
+    "RoshanAdminLogin":
+    {
+        "mobileNumber":"8767002011",
+        "OTP":"1234",
+        "emailId":"roshan.admin@yopmail.com"
+    },
+    "RoshanOperationLogin":
+    {
+        "mobileNumber":"8767002005",
+        "OTP":"1234",
+        "emailId":"roshan.ops@yopmail.com"
+    }
+}

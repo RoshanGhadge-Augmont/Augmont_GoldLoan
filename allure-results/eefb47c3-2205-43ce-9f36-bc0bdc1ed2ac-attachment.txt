@@ -1,0 +1,31 @@
+Fetched URL Successfully
+New browser context with the new page as already logged in user
+▶️ [Test Started]: Started flow for adding new customer
+Started flow for selecting all branches from dropdown
+For Appraiser -> Show all branches is selected
+Searched with the MPHWGJLK on applied loan page
+Fetched the loan Id for customer CHAK-43289
+✅ Output written to addCustomerDetails.json → { loanId: 'CHAK-43289' }
+Filter > document upload button is clicked
+Document Upload Details tab is visible and in focus
+Fetched file path into fileupload utility is D:\Gold_Loan_Playwright\test-data\Attachments\sample_pdf.pdf
+File Path exists in attachmentfolder
+Loan Agreement copy gets uploaded
+Fetched file path into fileupload utility is D:\Gold_Loan_Playwright\test-data\Attachments\sample_pdf.pdf
+File Path exists in attachmentfolder
+pawn ticket copy gets uploaded
+Fetched file path into fileupload utility is D:\Gold_Loan_Playwright\test-data\Attachments\sample_pdf.pdf
+File Path exists in attachmentfolder
+scheme configuration gets uploaded
+Download Cash Receipt button is clicked 
+No popup is detected for cash receipt
+Fetched file path into fileupload utility is D:\Gold_Loan_Playwright\test-data\Attachments\sample_pdf.pdf
+File Path exists in attachmentfolder
+Cash receipt gets uploaded
+Getting value of is cash receipt is attached false
+Confirmation popup is visible
+confirmation pop-up is visible & its clicked
+Lead Converter is visible
+Lead Converter popup is visible and button is clicked
+✅ [Test Success]: All gold loan application documents has been uploadedsuccessfully
+Browser Context and Page has been closed sucessfully in uploadDocument test

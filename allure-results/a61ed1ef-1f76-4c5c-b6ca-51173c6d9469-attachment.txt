@@ -1,0 +1,41 @@
+Fetched URL Successfully
+New browser context with the new page as already logged in user
+▶️ [Test Started]: Started flow for adding new customer
+Navigated to the Appraiser Request Page
+Started flow for selecting all branches from dropdown
+For Appraiser -> Show all branches is selected
+CPV Mandatory PopUp is visible and accepted while applying new loan
+Basic details has been entered successfully
+Nominee details tab is visible completely
+Nominee mobile number has been entered as 7609983728
+✅ Output written to addCustomerDetails.json → { nomineeMobileNumber: '7609983728' }
+All the nominee details are filled up 
+Jewellery details tab is visible and in focus
+Jewellery 1 section is visible
+Jewellery Type as the chain is selected
+Jewellery 1 Details- number of pieces, gross, deduction weight is updated
+camera preview is visible on screen
+picture is clicked and camera preview is hidden
+Jewellery picture with its weight has been taken for jewellery 1 
+Final Interest calculation tab is visible and in focus
+All the loan details are filled and clicked on calculate button
+Bank Details tab is visible and in focus
+Amount to be paid is fetched 8500
+Amount to be paid is entered into the advance cash section
+Packet Details tab is visible and in focus
+camera preview is visible on screen
+picture is clicked and camera preview is hidden
+Empty Packet with all jewellery picture has been taken 
+camera preview is visible on screen
+picture is clicked and camera preview is hidden
+Sealed packet with weight jewellery picture has been taken for 
+camera preview is visible on screen
+picture is clicked and camera preview is hidden
+Sealed packet  picture has been taken for  
+camera preview is visible on screen
+picture is clicked and camera preview is hidden
+Customer Live image has been taken for
+Are you sure you want to save packets popup handled successfully
+All the packet details are saved successfullly
+✅ [Test Success]: Customer appriaser request has been completed successfully
+Browser context and page has been closed successfully at appraiser Request test

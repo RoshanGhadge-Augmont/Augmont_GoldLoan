@@ -1,0 +1,13 @@
+Fetched URL Successfully
+New browser context with the new page as already logged in user
+▶️ [Test Started]: Started flow for initiating new gold loan for customer
+Navigated to the add customer Page
+Started selecting branch from profile section
+ chakal branch has been selected from the dropdown
+Found a customer with its customer Id with completed its kyc
+Create a gold loan request pop-up is visible
+Appraiser is selected for the gold loan
+New gold loan request has been added successfully
+Appraiser Request tab is visible - Loan request is confirmed
+✅ [Test Success]: Customer gold loan application request has been completed successfully
+Browser Context and Page has been closed sucessfully in initiateGoldLoan test

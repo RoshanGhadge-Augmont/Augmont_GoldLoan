@@ -1,0 +1,23 @@
+🔄 Output reset for: addCustomerDetails.json
+🧹 Removed folder → allure-results
+Fetched URL Successfully
+New browser context with the new page as already logged in user in beforeEach
+▶️ [Test Started]: Started flow for adding new customer
+Started flow for changing the default branch
+Completed Branch has been changed to chakal
+Navigated to the Add Customer page
+Started the flow of adding customer
+Selecting the lead source from dropdown as:- , Roshan App
+Mobile Number Entered Is :- 7491958047
+✅ Output written to addCustomerDetails.json → { customerMobileNumber: '7491958047' }
+Customer Id has been saved to addCustomerDetails
+Mobile Nuber is verified with OTP
+Added a new customer to system
+Started flow of fetching UserId of customer from pincode
+Searching the customer with its pincode : 400706
+Newly Added Customer with it id:- MPHWGJLK
+✅ Output written to addCustomerDetails.json → { customerId: 'MPHWGJLK' }
+Addded customer id for newly added customer into addCustomerDetails
+Fetched Customer Id Into addCustomerPage:- MPHWGJLK
+✅ [Test Success]: Customer has been added and stored its customer id successfully
+Browser Context and Page has been closed sucessfully in addCustomer test
