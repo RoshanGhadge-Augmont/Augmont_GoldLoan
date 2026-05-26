@@ -42,4 +42,3 @@ export class LoginPage {
     }
   }
 }
-//  Test exmample from config management
