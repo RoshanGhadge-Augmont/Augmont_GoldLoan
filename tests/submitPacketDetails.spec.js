@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import logCred from "../test-data/loginCred.json";
+// import logCred from "../test-data/loginCred.json";
 import { poManager } from "../pages/poManager.js";
 import {
   readInput,
@@ -10,6 +10,7 @@ import {
 import config from "../config/env.js";
 import { logger } from "../commonUtils/loggerHelperUtility.js";
 import * as allure from "allure-js-commons";
+const logCred = JSON.parse(process.env.LOGIN_CREDENTIALS);
 
 let webContext;
 let newPage;

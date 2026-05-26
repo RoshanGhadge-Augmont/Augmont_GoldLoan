@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import logCred from "../test-data/loginCred.json";
+// import logCred from "../test-data/loginCred.json";
 import { poManager } from "../pages/poManager";
 import {
   readInput,
@@ -10,6 +10,7 @@ import {
 import config from "../config/env.js";
 import { logger } from "../commonUtils/loggerHelperUtility.js";
 import * as allure from "allure-js-commons";
+const logCred = JSON.parse(process.env.LOGIN_CREDENTIALS);
 
 let webContext;
 let newPage;
@@ -104,6 +105,8 @@ test.describe("Admin Document Upload Flow > ", async () => {
 
     // Read customerdetails .json file
     const { customerId } = readOutput("addCustomerDetails");
+    const { leadConverter } = readInput("addCustomerDetails");
+    console.info(`Extracted leadConverter from input: ${leadConverter}`);
 
     // const customerId = "MP3NSXQZ";
     const poManagerObj = new poManager(newPage);
@@ -114,7 +117,7 @@ test.describe("Admin Document Upload Flow > ", async () => {
       customerId,
     );
     await uploadDocumentPageObj.waitForUploadDocumentTab();
-    await uploadDocumentPageObj.uploadLoanDocuments();
+    await uploadDocumentPageObj.uploadLoanDocuments(leadConverter);
     logger.success(
       `[Test Success]: All gold loan application documents has been uploadedsuccessfully`,
     );

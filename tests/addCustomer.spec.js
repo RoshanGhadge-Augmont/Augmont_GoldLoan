@@ -1,8 +1,7 @@
 import { test, expect, browser } from "@playwright/test";
 import { poManager } from "../pages/poManager";
 import { generateRandomMobileNumber } from "../commonUtils/randomDataUtility.js";
-import userData from "../test-data/addCustomerDetails.json";
-import logCred from "../test-data/loginCred.json";
+// import userData from "../test-data/addCustomerDetails.json";
 import {
   readInput,
   writeOutput,
@@ -12,6 +11,8 @@ import {
 import config from "../config/env.js";
 import * as allure from "allure-js-commons";
 import { logger } from "../commonUtils/loggerHelperUtility.js";
+
+const logCred = JSON.parse(process.env.LOGIN_CREDENTIALS);
 
 let webContext;
 let newPage;
@@ -95,7 +96,7 @@ test.describe("Add New Customer Flow --> ", async () => {
     logger.start(`[Test Started]: Started flow for adding new customer`);
 
     // Read Data from json file
-    const { firstName, lastName, pincode, OTP, branch, label, state, city } =
+    const { firstName, lastName, pincode, OTP, branch, leadConverter, state, city } =
       readInput("addCustomerDetails");
 
     // page Objects to action methods
@@ -109,7 +110,7 @@ test.describe("Add New Customer Flow --> ", async () => {
       lastName,
       OTP,
       pincode,
-      label,
+      leadConverter,
       state,
       city,
     );

@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { poManager } from "../pages/poManager";
-import logCred from "../test-data/loginCred.json";
+// import logCred from "../test-data/loginCred.json";
 import {
   readInput,
   writeOutput,
@@ -10,6 +10,7 @@ import {
 import config from "../config/env.js";
 import { logger } from "../commonUtils/loggerHelperUtility.js";
 import * as allure from "allure-js-commons";
+const logCred = JSON.parse(process.env.LOGIN_CREDENTIALS);
 
 let webContext;
 let newPage;
@@ -99,14 +100,17 @@ test.describe("Initiating a gold loan request for customer flow -->", async () =
     );
     // Reading data from json file for execution
     const { customerId } = readOutput("addCustomerDetails");
-    const { branch } = readInput("addCustomerDetails");
+    const { branch, leadConverter } = readInput("addCustomerDetails");
 
     // const customerId = "MP3NSXQZ";
     const poManagerObj = new poManager(newPage);
     const initiateGoldLoanPageObj = poManagerObj.getInitiateGoldLoanPage();
     await initiateGoldLoanPageObj.navigateToAllCustomerPage();
     await initiateGoldLoanPageObj.changeBranch(branch);
-    await initiateGoldLoanPageObj.getCustomerIDToInitiateGoldLoan(customerId);
+    await initiateGoldLoanPageObj.getCustomerIDToInitiateGoldLoan(
+      customerId,
+      leadConverter,
+    );
     await initiateGoldLoanPageObj.verifyGoldLoanRequestCreated();
     logger.success(
       `[Test Success]: Customer gold loan application request has been completed successfully`,

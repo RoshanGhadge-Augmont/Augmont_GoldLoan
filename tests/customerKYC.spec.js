@@ -1,8 +1,7 @@
 import { test, expect } from "@playwright/test";
 import { poManager } from "../pages/poManager";
 import { generateRandomMobileNumber } from "../commonUtils/randomDataUtility.js";
-const userData = require("../test-data/addCustomerDetails.json");
-import logCred from "../test-data/loginCred.json";
+// const userData = require("../test-data/addCustomerDetails.json");
 import {
   readInput,
   writeOutput,
@@ -12,6 +11,8 @@ import {
 import * as allure from "allure-js-commons";
 import config from "../config/env.js";
 import { logger } from "../commonUtils/loggerHelperUtility.js";
+
+const logCred = JSON.parse(process.env.LOGIN_CREDENTIALS);
 
 let webContext;
 let newPage;
@@ -35,7 +36,7 @@ test.describe(`Customer KYC Flow --> `, async () => {
       await webContext.grantPermissions(
         ["geolocation", "camera", "microphone"],
         {
-          origin: "https://ap.gfat.augmont.com",
+          origin: config.BASEURL,
         },
       );
       await newPage.goto(config.BASEURL + "/admin/welcome", {

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import logCred from "../test-data/loginCred.json";
+// import logCred from "../test-data/loginCred.json";
 import { poManager } from "../pages/poManager";
 import {
   readInput,
@@ -10,6 +10,7 @@ import {
 import config from "../config/env.js";
 import * as allure from "allure-js-commons";
 import { logger } from "../commonUtils/loggerHelperUtility.js";
+const logCred = JSON.parse(process.env.LOGIN_CREDENTIALS);
 
 let webContext;
 let newPage;
@@ -48,8 +49,8 @@ test.describe("Operation Team Approval For Loan", async () => {
       } else if (currentURL.includes("/auth/login")) {
         await loginPageObj.navigateTOURL();
         await loginPageObj.loginWithUser(
-          logCred.RoshanOperationLogin.mobileNumber,
-          logCred.RoshanOperationLogin.OTP,
+          logCred.OperationLogin.mobileNumber,
+          logCred.OperationLogin.OTP,
         );
 
         await newPage.waitForURL("**/welcome**", { timeout: 8000 });
@@ -65,8 +66,8 @@ test.describe("Operation Team Approval For Loan", async () => {
           waitUntil: "networkidle",
         });
         await loginPageObj.loginWithUser(
-          logCred.RoshanOperationLogin.mobileNumber,
-          logCred.RoshanOperationLogin.OTP,
+          logCred.OperationLogin.mobileNumber,
+          logCred.OperationLogin.OTP,
         );
         await newPage.waitForURL("**/welcome**", { timeout: 10000 });
         await webContext.storageState({

@@ -1,6 +1,8 @@
 import { test } from "@playwright/test";
-import logCred from "../test-data/loginCred.json";
+// import logCred from "../test-data/loginCred.json";
 import { poManager } from "../pages/poManager";
+
+const logCred = JSON.parse(process.env.LOGIN_CREDENTIALS);
 
 test("Login to panel with admin credentials", async ({ browser }) => {
   const context = await browser.newContext();

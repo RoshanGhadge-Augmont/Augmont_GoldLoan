@@ -55,7 +55,7 @@ export class InitiateGoldLoanPage {
     console.info(` ${branch} branch has been selected from the dropdown`);
   }
 
-  async getCustomerIDToInitiateGoldLoan(customerID) {
+  async getCustomerIDToInitiateGoldLoan(customerID, leadConverter) {
     // Filtering out the customer from all customer page
     await this.customerIdSearchField.fill(customerID);
     await this.filterButton.click();
@@ -83,7 +83,7 @@ export class InitiateGoldLoanPage {
     await startNewGoldLoan.click();
     await expect(this.goldLoanCreateRequestPopup).toBeVisible();
     console.info("Create a gold loan request pop-up is visible");
-    await this.appraiserNameField.selectOption({ value: "1388" });
+    await this.appraiserNameField.selectOption({ label: leadConverter });
     console.info("Appraiser is selected for the gold loan");
     await this.addButton.click();
     console.info("New gold loan request has been added successfully");

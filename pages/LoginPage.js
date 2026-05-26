@@ -1,4 +1,6 @@
 /** @typedef {import('@playwright/test').Page} Page */
+import config from "../config/env.js";
+
 export class LoginPage {
   /**
    * @param {Page} page
@@ -15,7 +17,7 @@ export class LoginPage {
 
   // All action methods
   async navigateTOURL() {
-    await this.page.goto("https://ap.gfat.augmont.com/auth/login", {
+    await this.page.goto(config.BASEURL + "/auth/login", {
       waitUntil: "load",
     });
     console.info("Navigated to Login URL");
@@ -40,3 +42,4 @@ export class LoginPage {
     }
   }
 }
+//  Test exmample from config management

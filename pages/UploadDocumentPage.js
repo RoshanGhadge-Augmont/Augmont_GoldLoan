@@ -62,8 +62,9 @@ export class UploadDocumentPage {
     this.leadConverterPopup = this.page.locator(
       'label:has-text("Lead Converter")',
     );
+    // Try to find mat-select first, fallback to standard select
     this.selectLeadConverter = this.page.locator(
-      'select[formcontrolname="leadConverterId"]',
+      'mat-select[formcontrolname="leadConverterId"], select[formcontrolname="leadConverterId"]',
     );
     this.doneButton = this.page.getByRole("button", { name: "Done" });
   }
@@ -120,7 +121,7 @@ export class UploadDocumentPage {
     console.info("Document Upload Details tab is visible and in focus");
   }
 
-  async uploadLoanDocuments() {
+  async uploadLoanDocuments(label) {
     await this.page.context().addInitScript(() => {
       window.print = () => {};
     });
@@ -223,6 +224,7 @@ export class UploadDocumentPage {
       }
     } catch (err) {
       console.error("Error gets thrown in confirmation pop-up", err);
+      throw err; // Re-throw so test fails properly
     }
 
     try {
@@ -233,7 +235,109 @@ export class UploadDocumentPage {
       if (await this.leadConverterPopup.isVisible()) {
         await this.page.waitForTimeout(2000);
         console.info("Lead Converter is visible");
-        await this.selectLeadConverter.selectOption({ value: "1388" });
+        console.info(`Attempting to select label: ${label}`);
+
+        // First try: Check if it's a standard select element
+        const optionElements = await this.selectLeadConverter
+          .locator("option")
+          .count();
+
+        if (optionElements > 0) {
+          // Standard HTML select element
+          console.info(
+            `Found ${optionElements} options - treating as standard select`,
+          );
+          const options = await this.selectLeadConverter
+            .locator("option")
+            .allTextContents();
+          console.info(
+            `Available options in dropdown: ${JSON.stringify(options)}`,
+          );
+
+          try {
+            await this.selectLeadConverter.selectOption({ label: label });
+            console.info(`Successfully selected label: ${label}`);
+          } catch (selectError) {
+            console.error(
+              `Failed to select label '${label}': ${selectError.message}`,
+            );
+            console.info(`Trying to select by value instead...`);
+            // Fallback: try to select by value
+            await this.selectLeadConverter.selectOption(label);
+            console.info(`Selected by value: ${label}`);
+          }
+        } else {
+          // Material Angular dropdown - needs different approach
+          console.info(
+            "No standard select options found - treating as Angular Material dropdown",
+          );
+
+          // Click to open the dropdown
+          await this.selectLeadConverter.click();
+          await this.page.waitForTimeout(1500);
+
+          // Get all available mat-options
+          const allMatOptions = this.page.locator("mat-option");
+          const optionCount = await allMatOptions.count();
+          console.info(`Found ${optionCount} mat-options in dropdown`);
+
+          // List all available options for debugging
+          const allOptions = await allMatOptions.allTextContents();
+          console.info(`Available mat-options: ${JSON.stringify(allOptions)}`);
+
+          // Look for exact match (with trimming)
+          const trimmedLabel = label.trim();
+          let found = false;
+
+          for (let i = 0; i < optionCount; i++) {
+            const optionText = (
+              await allMatOptions.nth(i).textContent()
+            ).trim();
+            console.info(`Comparing "${trimmedLabel}" with "${optionText}"`);
+
+            if (optionText === trimmedLabel) {
+              console.info(`Found exact match at index ${i}`);
+              await allMatOptions.nth(i).click();
+              found = true;
+              break;
+            }
+          }
+
+          if (!found) {
+            // Try partial match if exact match fails
+            console.warn(`No exact match found, trying partial match...`);
+            for (let i = 0; i < optionCount; i++) {
+              const optionText = (
+                await allMatOptions.nth(i).textContent()
+              ).trim();
+              if (
+                optionText.toLowerCase().includes(trimmedLabel.toLowerCase())
+              ) {
+                console.info(
+                  `Found partial match at index ${i}: "${optionText}"`,
+                );
+                await allMatOptions.nth(i).click();
+                found = true;
+                break;
+              }
+            }
+          }
+
+          if (!found) {
+            console.error(
+              `Could not find any matching option for: "${trimmedLabel}"`,
+            );
+            console.error(
+              `Available options were: ${JSON.stringify(allOptions)}`,
+            );
+            throw new Error(
+              `Lead Converter option "${trimmedLabel}" not found in dropdown`,
+            );
+          }
+
+          console.info(`Successfully selected: ${trimmedLabel}`);
+        }
+
         await this.page.waitForTimeout(2000);
         await this.doneButton.click();
         console.info("Lead Converter popup is visible and button is clicked");
@@ -241,7 +345,8 @@ export class UploadDocumentPage {
         console.info("Lead Converter popup is not getting shown");
       }
     } catch (err) {
-      console.error("Error gets thrown in Lead converter pop-up", err);
+      console.error(`Error in Lead converter pop-up: ${err.message}`);
+      throw err; // Re-throw so test fails properly
     }
   }
 

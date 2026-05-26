@@ -20,6 +20,7 @@ export async function cpvMandatoryPopup(
     }
   } catch (err) {
     console.error("Error in CPV Mandatory PopUp", err);
+    throw err; // Re-throw so test fails properly
   }
 }
 
@@ -45,6 +46,7 @@ export async function savePacketPopup(
     }
   } catch (err) {
     console.error("Error in Save Packet PopUp", err);
+    throw err; // Re-throw so test fails properly
   }
 }
 
@@ -67,6 +69,7 @@ export async function OSVDoneForCustomerPopup(
     }
   } catch (err) {
     console.error("Error in confirmation pop-up", err);
+    throw err; // Re-throw so test fails properly
   }
 }
 
@@ -82,12 +85,11 @@ export async function confirmationOfPayment(
       console.info("Payment confirmation Popup gets visible ");
       await yesButton.click({ timeout: 2000, force: true });
       await page.waitForTimeout(2000);
-
-      console.info("Confirmation of Payment pop-up is visible & handled");
     } else {
-      console.info("Confirmation of Payment pop-up is not asked");
+      console.info("Payment confirmation Popup is not asked");
     }
   } catch (err) {
     console.error("Error in confirmation pop-up", err);
+    throw err; // Re-throw so test fails properly
   }
 }

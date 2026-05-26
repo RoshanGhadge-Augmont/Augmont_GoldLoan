@@ -4,16 +4,26 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:addCustomer": "npx playwright test addCustomer.spec.js --project=chrome --headed",
-    "test:customerKYC": "npx playwright test customerKYC.spec.js --project=chrome --headed",
-    "test:initiateGoldLoan": "npx playwright test initiateGoldLoan.spec.js --project=chrome --headed",
-    "test:appraiserRequest": "npx playwright test appraiserRequest.spec.js --project=chrome --headed",
-    "test:uploadDocuments": "npx playwright test uploadDocument.spec.js --project=chrome --headed",
-    "test:operationTeamApproval": "npx playwright test operationTeamApproval.spec.js --project=chrome --headed",
-    "test:partnerDisburseAmount": "npx playwright test partnerDisburseAmount.spec.js --project=chrome --headed",
-    "test:submitPacket": "npx playwright test submitPacketDetails.spec.js --project=chrome --headed",
+    "test:addCustomer": "set env=test && npx playwright test addCustomer.spec.js --project=chrome --headed",
+    "test:customerKYC": "set env=test && npx playwright test customerKYC.spec.js --project=chrome --headed",
+    "test:initiateGoldLoan": "set env=test && npx playwright test initiateGoldLoan.spec.js --project=chrome --headed",
+    "test:appraiserRequest": "set env=test && npx playwright test appraiserRequest.spec.js --project=chrome --headed",
+    "test:uploadDocuments": "set env=test && npx playwright test uploadDocument.spec.js --project=chrome --headed",
+    "test:operationTeamApproval": "set env=test && npx playwright test operationTeamApproval.spec.js --project=chrome --headed",
+    "test:partnerDisburseAmount": "set env=test && npx playwright test partnerDisburseAmount.spec.js --project=chrome --headed",
+    "test:submitPacket": "set env=test && npx playwright test submitPacketDetails.spec.js --project=chrome --headed",
+    
+    "uat:addCustomer": "set env=uat && npx playwright test addCustomer.spec.js --project=chrome --headed",
+    "uat:customerKYC": "set env=uat && npx playwright test customerKYC.spec.js --project=chrome --headed",
+    "uat:initiateGoldLoan": "set env=uat && npx playwright test initiateGoldLoan.spec.js --project=chrome --headed",
+    "uat:appraiserRequest": "set env=uat && npx playwright test appraiserRequest.spec.js --project=chrome --headed",
+    "uat:uploadDocuments": "set env=uat && npx playwright test uploadDocument.spec.js --project=chrome --headed",
+    "uat:operationTeamApproval": "set env=uat && npx playwright test operationTeamApproval.spec.js --project=chrome --headed",
+    "uat:partnerDisburseAmount": "set env=uat && npx playwright test partnerDisburseAmount.spec.js --project=chrome --headed",
+    "uat:submitPacket": "set env=uat && npx playwright test submitPacketDetails.spec.js --project=chrome --headed",
+
     "test:show-report": "npx playwright show-report",
-    "test:show-allure-report":"npx allure serve allure-results"
+    "test:show-allure-report": "npx allure serve allure-results"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +33,7 @@
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.5.0",
     "allure-commandline": "^2.41.0",
+    "cross-env": "^10.1.0",
     "dotenv": "^17.4.2"
   },
   "directories": {

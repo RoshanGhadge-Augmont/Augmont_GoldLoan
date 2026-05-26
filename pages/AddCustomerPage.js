@@ -79,13 +79,23 @@ export class AddCustomerPage {
     console.info("Navigated to the Add Customer page");
   }
 
-  async addNewCustomer(firstname, lastname, otp, pincode, label, state, city) {
+  async addNewCustomer(
+    firstname,
+    lastname,
+    otp,
+    pincode,
+    leadConverter,
+    state,
+    city,
+  ) {
     try {
       await this.addCustomerButton.click();
       console.info(`Started the flow of adding customer`);
       await expect(this.addCustomerPopUp).toBeVisible();
-      await this.leadSourceDropdown.selectOption({ label: label });
-      console.info(`Selecting the lead source from dropdown as:- , ${label}`);
+      await this.leadSourceDropdown.selectOption({ label: leadConverter });
+      console.info(
+        `Selecting the lead source from dropdown as:- , ${leadConverter}`,
+      );
       await this.firstNameField.fill(firstname);
       await this.lastNameField.fill(lastname);
       await expect(this.sendOTPButton).toBeDisabled();

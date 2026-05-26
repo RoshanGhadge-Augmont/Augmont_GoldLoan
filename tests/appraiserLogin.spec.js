@@ -1,7 +1,7 @@
-
 import { test } from "@playwright/test";
-import userData from "../test-data/loginCred.json";
 import { poManager } from "../pages/poManager";
+
+const logCred = JSON.parse(process.env.LOGIN_CREDENTIALS);
 
 test("Login to panel with admin credentials", async ({ browser }) => {
   const context = await browser.newContext();
@@ -11,8 +11,8 @@ test("Login to panel with admin credentials", async ({ browser }) => {
 
   await LoginPageObj.navigateTOURL();
   await LoginPageObj.loginWithUser(
-    userData.RoshanOperationLogin.mobileNumber,
-    userData.RoshanOperationLogin.OTP,
+    logCred.OperationLogin.mobileNumber,
+    logCred.OperationLogin.OTP,
   );
 
   await newPage.waitForLoadState("networkidle");

@@ -321,15 +321,81 @@ export class AppraiserRequestpage {
   async fillLoanBankDetails() {
     await this.branchAdvanceCash.clear();
     await this.page.reload({ waitUntil: "networkidle" });
-    const rawText = await this.page.locator("//tbody/tr[8]/td[2]").innerText();
-    const toBePaidAmount = rawText.replace(/[₹,\s]/g, "").trim();
-    console.info(`Amount to be paid is fetched ${toBePaidAmount}`);
-    await this.branchAdvanceCash.fill(toBePaidAmount);
-    console.info("Amount to be paid is entered into the advance cash section");
+    await this.branchAdvanceCash.clear();
+
+    // More robust locator: find the row by label text instead of hardcoded row number
+    let toBePaidAmount = null;
+
+    try {
+      // Try to find "Amount to be Paid" or similar label text in the table
+      const amountRow = await this.page
+        .locator(
+          "//tbody/tr[contains(., 'To be Paid') or contains(., 'be paid')]",
+        )
+        .first();
+
+      const rowText = await amountRow.innerText();
+      console.info(`Found amount row: ${rowText}`);
+
+      // Extract the amount directly from the row text
+      // The row text contains something like "To be paid    ₹10,000"
+      // Extract just the numeric amount with currency
+      const currencyMatch = rowText.match(/₹[\d,]+/);
+      if (currencyMatch) {
+        toBePaidAmount = currencyMatch[0].replace(/[₹,\s]/g, "").trim();
+      } else {
+        // Fallback: try to extract any sequence of digits and commas
+        const digitMatch = rowText.match(/[\d,]+/);
+        if (digitMatch) {
+          toBePaidAmount = digitMatch[0].replace(/,/g, "").trim();
+        }
+      }
+      console.info(`Extracted amount: ${toBePaidAmount}`);
+    } catch (error) {
+      console.warn(
+        `Failed to find by label, trying fallback method: ${error.message}`,
+      );
+
+      // Fallback: try the hardcoded xpath as backup
+      try {
+        const rawText = await this.page
+          .locator("//tbody/tr[8]/td[2]")
+          .innerText();
+        toBePaidAmount = rawText.replace(/[₹,\s]/g, "").trim();
+      } catch (fallbackError) {
+        console.error(`Fallback method also failed: ${fallbackError.message}`);
+        // Alternative: try to get all tbody rows and log them for debugging
+        const allRows = await this.page.locator("//tbody/tr").count();
+        console.info(`Total rows in table: ${allRows}`);
+
+        // Try to find any row that contains currency symbol or numbers
+        for (let i = 0; i < Math.min(allRows, 15); i++) {
+          const cellText = await this.page
+            .locator(`//tbody/tr[${i + 1}]/td[2]`)
+            .innerText()
+            .catch(() => "");
+          console.info(`Row ${i + 1}, Column 2: ${cellText}`);
+        }
+      }
+    }
+
+    if (toBePaidAmount && toBePaidAmount.length > 0) {
+      console.info(`Amount to be paid is fetched: ${toBePaidAmount}`);
+      await this.branchAdvanceCash.fill(toBePaidAmount);
+      console.info(
+        "Amount to be paid is entered into the advance cash section",
+      );
+    } else {
+      throw new Error(
+        "Failed to fetch amount to be paid - cannot proceed with test",
+      );
+    }
+    await this.page.waitForTimeout(1500);
     await this.nextButton.click();
   }
 
   async waitForPacketDetailsTab() {
+    await this.page.waitForTimeout(2000);
     await expect(this.packetDetailsTab).toBeVisible();
     console.info("Packet Details tab is visible and in focus");
   }

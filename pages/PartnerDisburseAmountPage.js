@@ -84,7 +84,8 @@ export class PartnerDisburseAmountPage {
 
     // Payment confirm disburse popup
     this.paymentDisbursePopup = this.page.getByText(
-      "Are you sure you want to confirm the payment of INR 0?",
+      /Are you sure you want to confirm the payment of INR/,
+      { exact: false },
     );
     this.yesButton = this.page.getByRole("button", { name: "Yes" });
   }

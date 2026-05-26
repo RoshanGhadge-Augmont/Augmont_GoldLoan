@@ -22,5 +22,6 @@ export async function ClickPicture(page, cameraPreview, takePicture) {
     console.info(`picture is clicked and camera preview is hidden`);
   } catch (err) {
     console.error(`Getting error while capturing the photo ${err}`);
+    throw err; // Re-throw so test fails properly
   }
 }
