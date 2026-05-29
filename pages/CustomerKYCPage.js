@@ -350,21 +350,6 @@ export class CustomerKYCPage {
     console.info(
       "Address and Identity details tab confirmation popup is handled.",
     );
-
-    // try {
-    //   await this.confirmationPopUp.waitFor({ state: "visible", timeout: 3000 });
-    //   if (await this.confirmationPopUp.isVisible()) {
-    //     await this.yesButton.click();
-    //     await this.page.waitForTimeout(2000);
-    //     console.info(
-    //       "confirmation pop-up is visible & its clicked in address and identify tab",
-    //     );
-    //   } else {
-    //     console.info("Confirmation pop-up is not asked");
-    //   }
-    // } catch (err) {
-    //   console.error("Error gets thrown in confirmation pop-up", err);
-    // }
   }
 
   async waitForPersonalDetailsTab() {

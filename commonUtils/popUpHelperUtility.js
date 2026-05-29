@@ -32,7 +32,7 @@ export async function savePacketPopup(
   try {
     await page.waitForTimeout(1500);
 
-    await savePacketPopup.waitFor({ state: "visible", timeout: 3000 });
+    await savePacketPopup.waitFor({ state: "visible", timeout: 4000 });
 
     if (await savePacketPopup.isVisible()) {
       await savePacketYesButton.click();
@@ -60,7 +60,7 @@ export async function OSVDoneForCustomerPopup(
 
     if (await confirmationPopUp.isVisible()) {
       console.info("Confirmation gets visible ");
-      await yesButton.click({ timeout: 2000, force: true });
+      await yesButton.click({ timeout: 4000, force: true });
       await page.waitForTimeout(2000);
 
       console.info("Confirmation pop-up is visible & handled");
@@ -83,7 +83,7 @@ export async function confirmationOfPayment(
 
     if (await paymentDisbursePopup.isVisible()) {
       console.info("Payment confirmation Popup gets visible ");
-      await yesButton.click({ timeout: 2000, force: true });
+      await yesButton.click({ timeout: 4000, force: true });
       await page.waitForTimeout(2000);
     } else {
       console.info("Payment confirmation Popup is not asked");

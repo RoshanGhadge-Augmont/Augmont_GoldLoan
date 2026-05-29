@@ -5,6 +5,7 @@ const logCred = JSON.parse(process.env.LOGIN_CREDENTIALS);
 
 test("Login to panel with admin credentials", async ({ browser }) => {
   const context = await browser.newContext();
+  
   const newPage = await context.newPage();
   const poManagerObj = new poManager(newPage);
   const LoginPageObj = poManagerObj.getLoginPage();

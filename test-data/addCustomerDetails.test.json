@@ -27,6 +27,12 @@
     "ornament1DeductionWeight": "2",
     "ornament1Karat": "24 K",
     "ornament1Purity": "85 %",
+    "ornament2": "Studs",
+    "ornament2Pieces": "2",
+    "ornament2GrossWeight": "121",
+    "ornament2DeductionWeight": "2",
+    "ornament2Karat": "24 K",
+    "ornament2Purity": "85 %",
     "partner": "ROSHAN PARTNER",
     "schemeName": "[ALL] EXPRESS GL - RT (NEW) (0 - 1500000)",
     "loanAmount": "10000",
@@ -36,13 +42,13 @@
     "partnerUserMobileNumber": "8652849318"
   },
   "output": {
-    "customerId": "MPMHSACB",
-    "customerMobileNumber": "8307213272",
-    "customerAadhdarNumber": "757289773104",
-    "customerPanCardNumber": "SLYJH0086W",
-    "nomineeMobileNumber": "7280771216",
-    "loanId": "CHAK-33084",
-    "disbursedPaymentTransactionId": "S192EWC",
-    "packetID": "TESTD247"
+    "customerId": "MPQEES9Z",
+    "customerMobileNumber": "9028731583",
+    "customerAadhdarNumber": "604589530740",
+    "customerPanCardNumber": "FJSJF4705F",
+    "nomineeMobileNumber": "7135217037",
+    "loanId": "CHAK-96831",
+    "disbursedPaymentTransactionId": "8P1WY8Z",
+    "packetID": "TESTD253"
   }
 }

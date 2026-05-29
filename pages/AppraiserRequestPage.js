@@ -73,9 +73,7 @@ export class AppraiserRequestpage {
     this.jewelleryTypeInputField = this.page.locator(
       'div.ng-input input[role="combobox"]',
     );
-    this.selectChainJewellery = this.page.locator(
-      'span.ng-option-label:has-text("Chain")',
-    );
+
     this.grossWeightField = this.page.locator(
       'input[formcontrolname="grossWeight"]',
     );
@@ -97,7 +95,7 @@ export class AppraiserRequestpage {
     this.cameraPreview = this.page.locator("div.webcam-wrapper");
     this.takePicture = this.page.locator('div[title="Take Picture"]');
 
-    // Add More Button
+    // Add More JewelleryButton
     this.addMoreJewellery = this.page.getByRole("button", {
       name: "+ Add More",
     });
@@ -259,30 +257,90 @@ export class AppraiserRequestpage {
     ornament1DeductionWeight,
     ornament1Karat,
     ornament1Purity,
+    ornament2,
+    ornament2Pieces,
+    ornament2GrossWeight,
+    ornament2DeductionWeight,
+    ornament2Karat,
+    ornament2Purity,
   ) {
     // Adding Jewellery 1 Details
     await expect(this.jewellery1).toBeVisible();
     console.info("Jewellery 1 section is visible");
     await this.jewelleryTypeInputField.click();
+    await this.page.waitForTimeout(1500);
     await this.jewelleryTypeInputField.fill(ornament1);
-    await expect(this.selectChainJewellery).toBeVisible();
-    await this.selectChainJewellery.click();
+    await this.page.waitForTimeout(1500);
+    this.selectOrnament1Jewellery = this.page.locator(
+      `span.ng-option-label:has-text("${ornament1}")`,
+    );
+    await this.page.waitForTimeout(1500);
+    await expect(this.selectOrnament1Jewellery).toBeVisible();
+    await this.selectOrnament1Jewellery.click();
+    await this.page.waitForTimeout(1500);
     console.info("Jewellery Type as the chain is selected");
     await this.numberOfPiecesField.fill(ornament1Pieces);
+    await this.page.waitForTimeout(1500);
     await this.grossWeightField.fill(ornament1GrossWeight);
+    await this.page.waitForTimeout(1500);
     await this.deductionWeightField.fill(ornament1DeductionWeight);
+    await this.page.waitForTimeout(1500);
     await this.netWeightField.click();
     console.info(
       "Jewellery 1 Details- number of pieces, gross, deduction weight is updated",
     );
     await this.karatDropdown.selectOption({ label: ornament1Karat });
+    await this.page.waitForTimeout(1500);
     await this.purityDropdown.selectOption({ label: ornament1Purity });
+    await this.page.waitForTimeout(1500);
     await this.remarkField.fill("Test 1 Remark is added");
     await this.uploadJewelleryWithWightImage.click();
+    await this.page.waitForTimeout(1500);
     await ClickPicture(this.page, this.cameraPreview, this.takePicture);
 
     console.info(
       "Jewellery picture with its weight has been taken for jewellery 1 ",
+    );
+
+    // Adding Jewellery 2 Details
+    await this.addMoreJewellery.click();
+    await this.page.waitForTimeout(2000);
+    await expect(this.jewellery2).toBeVisible();
+    console.info(
+      "Jewellery 2 section is visible after clicking on add more jewellery button",
+    );
+    await this.page.waitForTimeout(1500);
+    await this.jewelleryTypeInputField.click();
+    await this.page.waitForTimeout(1500);
+    await this.jewelleryTypeInputField.fill(ornament2);
+    await this.page.waitForTimeout(1500);
+    this.selectOrnament2Jewellery = this.page.locator(
+      `span.ng-option-label:has-text("${ornament2}")`,
+    );
+    await this.page.waitForTimeout(1500);
+    await expect(this.selectOrnament2Jewellery).toBeVisible();
+    await this.selectOrnament2Jewellery.click();
+    await this.page.waitForTimeout(1500);
+    console.info("Jewellery Type as the chain is selected");
+    await this.numberOfPiecesField.fill(ornament2Pieces);
+    await this.page.waitForTimeout(1500);
+    await this.grossWeightField.fill(ornament2GrossWeight);
+    await this.page.waitForTimeout(1500);
+    await this.deductionWeightField.fill(ornament2DeductionWeight);
+    await this.page.waitForTimeout(1500);
+    await this.netWeightField.click();
+
+    console.info(
+      "Jewellery 2 Details- number of pieces, gross, deduction weight is updated",
+    );
+    await this.karatDropdown.selectOption({ label: ornament2Karat });
+    await this.purityDropdown.selectOption({ label: ornament2Purity });
+    await this.remarkField.fill("Test 2 Remark is added");
+    await this.uploadJewelleryWithWightImage.click();
+    await ClickPicture(this.page, this.cameraPreview, this.takePicture);
+
+    console.info(
+      "Jewellery picture with its weight has been taken for jewellery 2 ",
     );
 
     await expect(this.nextButton).toBeVisible();

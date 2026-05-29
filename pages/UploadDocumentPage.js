@@ -335,11 +335,11 @@ export class UploadDocumentPage {
             );
           }
 
-          console.info(`Successfully selected: ${trimmedLabel}`);
+          // console.info(`Successfully selected: ${trimmedLabel}`);
         }
 
-        await this.page.waitForTimeout(2000);
         await this.doneButton.click();
+        await this.page.waitForTimeout(2000);
         console.info("Lead Converter popup is visible and button is clicked");
       } else {
         console.info("Lead Converter popup is not getting shown");

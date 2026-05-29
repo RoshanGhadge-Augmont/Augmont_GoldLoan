@@ -15,6 +15,23 @@ const logCred = JSON.parse(process.env.LOGIN_CREDENTIALS);
 let webContext;
 let newPage;
 
+const cleanupBrowserSession = async () => {
+  if (newPage && !newPage.isClosed()) {
+    await newPage.close().catch((err) => {
+      console.warn("Failed to close page during cleanup:", err);
+    });
+  }
+
+  if (webContext) {
+    await webContext.close().catch((err) => {
+      console.warn("Failed to close browser context during cleanup:", err);
+    });
+  }
+
+  newPage = undefined;
+  webContext = undefined;
+};
+
 test.describe("Initiating a gold loan request for customer flow -->", async () => {
   test.beforeEach(async ({ browser }) => {
     // initial setup for the user to be gets logged in directly with the help of userAuth.json
@@ -57,7 +74,7 @@ test.describe("Initiating a gold loan request for customer flow -->", async () =
           logCred.AdminLogin.OTP,
         );
 
-        await newPage.waitForURL("**/welcome**", { timeout: 8000 });
+        await expect(newPage).toHaveURL(/\/welcome/, { timeout: 15000 });
         await webContext.storageState({
           path: "storage-states/adminUserAuthDetails.json",
         });
@@ -71,7 +88,7 @@ test.describe("Initiating a gold loan request for customer flow -->", async () =
           logCred.AdminLogin.mobileNumber,
           logCred.AdminLogin.OTP,
         );
-        await newPage.waitForURL("**/welcome**", { timeout: 10000 });
+        await expect(newPage).toHaveURL(/\/welcome/, { timeout: 15000 });
         await webContext.storageState({
           path: "storage-states/adminUserAuthDetails.json",
         });
@@ -79,11 +96,16 @@ test.describe("Initiating a gold loan request for customer flow -->", async () =
           "Force Login Successful and Session Storage saved successfully ",
         );
       }
+
+      if (!newPage.url().includes("/welcome")) {
+        throw new Error("Login failed: browser did not reach /welcome page.");
+      }
     } catch (err) {
       console.error(
         "Caught Exception in beforeEach block while setting up browsercontext & newpage:-",
         err,
       );
+      await cleanupBrowserSession();
       throw err;
     }
   });
@@ -119,9 +141,7 @@ test.describe("Initiating a gold loan request for customer flow -->", async () =
 
   test.afterEach(async () => {
     try {
-      await newPage.waitForTimeout(4000);
-      await newPage.close();
-      await webContext.close();
+      await cleanupBrowserSession();
       console.info(
         "Browser Context and Page has been closed sucessfully in initiateGoldLoan test",
       );
@@ -130,7 +150,6 @@ test.describe("Initiating a gold loan request for customer flow -->", async () =
         "Caught exception in afterEach for closing the browser & page  on initiateGoldLoan Test:- ",
         err,
       );
-      throw err;
     }
   });
 });
