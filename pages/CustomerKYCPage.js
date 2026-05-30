@@ -15,6 +15,7 @@ import config from "../config/env.js";
 import { uploadFile } from "../commonUtils/fileUploadHelperUtility.js";
 import { ClickPicture } from "../commonUtils/cameraHandlingUtility.js";
 import { OSVDoneForCustomerPopup } from "../commonUtils/popUpHelperUtility.js";
+import { getCaseInsensitiveOptionLabel } from "../commonUtils/dropdownOptionMatcherUtility.js";
 
 /** @typedef {import('@playwright/test').Page} Page */
 
@@ -276,7 +277,6 @@ export class CustomerKYCPage {
       const result = await navigator.permissions.query({ name: "geolocation" });
       return result.state;
     });
-
     console.log("Geolocation permission:", permissionState);
   }
 
@@ -288,7 +288,6 @@ export class CustomerKYCPage {
       const result = await navigator.permissions.query({ name: "geolocation" });
       return result.state;
     });
-
     console.log("Geolocation permission:", permissionState);
   }
 
@@ -322,9 +321,27 @@ export class CustomerKYCPage {
     await this.page.waitForTimeout(1500);
     await this.permanantAddressField.fill(permanantAddress);
     await this.page.waitForTimeout(1500);
-    await this.stateDropdown.selectOption({ label: state });
+    const matchedStateLabel = await getCaseInsensitiveOptionLabel(
+      this.stateDropdown,
+      state,
+    );
+    if (matchedStateLabel) {
+      await this.stateDropdown.selectOption({ label: matchedStateLabel });
+    } else {
+      console.warn(
+        `State option ${state} is not found in the dropdown options`,
+      );
+    }
     await this.page.waitForTimeout(1500);
-    await this.cityDropdown.selectOption({ label: city });
+    const matchedCityLabel = await getCaseInsensitiveOptionLabel(
+      this.cityDropdown,
+      city,
+    );
+    if (matchedCityLabel) {
+      await this.cityDropdown.selectOption({ label: matchedCityLabel });
+    } else {
+      console.warn(`City option ${city} is not found in the dropdown options`);
+    }
     await this.page.waitForTimeout(1500);
     await this.landMarkField.fill(landMark);
     await this.page.waitForTimeout(1500);
@@ -365,12 +382,9 @@ export class CustomerKYCPage {
     religion,
   ) {
     await this.uploadProfilePictureButton.click();
-    await this.page.waitForTimeout(5000);
-
+    await this.page.waitForTimeout(3000);
     await ClickPicture(this.page, this.cameraPreview, this.takePictureButton);
-
     console.info("Profile Picture is taken");
-
     await this.calenderField.click();
     await this.page.waitForTimeout(1000);
     await this.chooseYearandMonth.click();
@@ -397,25 +411,35 @@ export class CustomerKYCPage {
     console.info("Occupation is selected from the dropdown");
     await this.page.waitForTimeout(1000);
     await this.motherNameField.fill(motherName);
-    await this.page.waitForTimeout(1000);
-    await this.religionDropdown.selectOption({ label: religion });
+    const religionLabel = await getCaseInsensitiveOptionLabel(
+      this.religionDropdown,
+      religion,
+    );
+    if (religionLabel) {
+      await this.religionDropdown.selectOption({ label: religionLabel });
+      console.info(
+        `Religion label with case insensitive match is found as ${religionLabel}`,
+      );
+    } else {
+      console.warn(`Religion label not found for ${religion}`);
+    }
     await this.fatherNameField.fill(fatherName);
     await this.page.waitForTimeout(1000);
     await this.physicallyChallengedDropdown.selectOption({ value: "1" });
-    await this.page.waitForTimeout(1500);
+    await this.page.waitForTimeout(1000);
     console.log("");
     await this.politicallyExposedDropdown.selectOption({ value: "1" });
     console.log("Politically exposed dropdown value has been selected");
-    await this.page.waitForTimeout(1500);
+    await this.page.waitForTimeout(1000);
     await this.specialCategoryDropdown.selectOption({ value: "15" });
     console.log("Special Category is selected");
-    await this.page.waitForTimeout(1500);
+    await this.page.waitForTimeout(1000);
     await this.annualIncomeDropdown.selectOption({ value: "3 to 5 Lakh" });
     console.log("Annual Income selected");
-    await this.page.waitForTimeout(1500);
+    await this.page.waitForTimeout(1000);
     await this.qualificationDropdown.selectOption({ value: "5" });
     console.log("Qualification is selected");
-    await this.page.waitForTimeout(1500);
+    await this.page.waitForTimeout(1000);
     // await this.signatureAttachmentOption.setInputFiles(
     //   path.resolve("test-data/Attachments/signature.png"),
     // );
@@ -425,7 +449,6 @@ export class CustomerKYCPage {
       "signature.png",
     );
     console.info("signature is attached");
-    await this.page.waitForTimeout(1500);
     await this.personalDetailsPageNextButton.click();
     console.info("Next button is clicked");
   }
@@ -436,7 +459,7 @@ export class CustomerKYCPage {
   }
 
   async submitDetails() {
-    await this.page.waitForTimeout(2000);
+    await this.page.waitForTimeout(1000);
     await this.reviewandSubmitButton.click();
     console.info("Detals are reviewed and submitted");
   }

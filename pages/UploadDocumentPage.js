@@ -7,6 +7,7 @@ import {
   writeOutput,
   wr,
 } from "../commonUtils/dataManagerUtility";
+import { getCaseInsensitiveOptionLabel } from "../commonUtils/dropdownOptionMatcherUtility.js";
 
 /** @typedef {import('@playwright/test').Page} Page */
 
@@ -255,8 +256,18 @@ export class UploadDocumentPage {
           );
 
           try {
-            await this.selectLeadConverter.selectOption({ label: label });
-            console.info(`Successfully selected label: ${label}`);
+            const leadConverterLabel = await getCaseInsensitiveOptionLabel(
+              this.selectLeadConverter,
+              label,
+            );
+            if (leadConverterLabel) {
+              console.info(`Matched label found: ${leadConverterLabel}`);
+              await this.selectLeadConverter.selectOption({
+                label: leadConverterLabel,
+              });
+            } else {
+              console.warn(`No matching label found for: ${label}`);
+            }
           } catch (selectError) {
             console.error(
               `Failed to select label '${label}': ${selectError.message}`,
@@ -339,7 +350,7 @@ export class UploadDocumentPage {
         }
 
         await this.doneButton.click();
-        await this.page.waitForTimeout(2000);
+        await this.page.waitForTimeout(4000);
         console.info("Lead Converter popup is visible and button is clicked");
       } else {
         console.info("Lead Converter popup is not getting shown");

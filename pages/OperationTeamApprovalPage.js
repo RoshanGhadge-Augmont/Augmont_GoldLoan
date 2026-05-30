@@ -176,7 +176,7 @@ export class OperationTeamApprovalPage {
     await this.opsTeamLoanStatus.selectOption({ value: "approved" });
     await this.page.waitForTimeout(1500);
     await this.submitButton.click();
-    await this.page.waitForTimeout(3000);
+    await this.page.waitForTimeout(4000);
     console.info(`Operation Team Loan Status is approved & Submitted the loan`);
   }
 }
