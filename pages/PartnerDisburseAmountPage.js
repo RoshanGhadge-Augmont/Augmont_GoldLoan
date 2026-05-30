@@ -8,6 +8,7 @@ import {
   resetOutput,
   readOutput,
 } from "../commonUtils/dataManagerUtility.js";
+import { getCaseInsensitiveOptionLabel } from "../commonUtils/dropdownOptionMatcherUtility.js";
 
 /** @typedef {import('@playwright/test').Page} Page */
 
@@ -124,8 +125,12 @@ export class PartnerDisburseAmountPage {
 
   async disburseAmount(paymentDisbursementType) {
     await this.page.waitForTimeout(2000);
+    const paymentTypeLabel = await getCaseInsensitiveOptionLabel(
+      this.selectPaymentType,
+      paymentDisbursementType,
+    );
     await this.selectPaymentType.selectOption({
-      label: paymentDisbursementType,
+      label: paymentTypeLabel,
     });
     console.info(
       `${paymentDisbursementType} Selected a transaction type from dropdown`,
@@ -139,6 +144,7 @@ export class PartnerDisburseAmountPage {
     });
 
     await this.doneButton.click();
+    await this.page.waitForTimeout(1500);
     console.info(`Done button has been clicked`);
 
     await confirmationOfPayment(
@@ -146,6 +152,7 @@ export class PartnerDisburseAmountPage {
       this.paymentDisbursePopup,
       this.yesButton,
     );
+    await this.page.waitForTimeout(4000);
     console.info(`Amount gets disbusrsed completely`);
   }
 }

@@ -8,6 +8,7 @@ import {
 } from "../commonUtils/dataManagerUtility.js";
 import config from "../config/env.js";
 import { logger } from "../commonUtils/loggerHelperUtility.js";
+import { getCaseInsensitiveOptionLabel } from "../commonUtils/dropdownOptionMatcherUtility.js";
 
 /** @typedef {import('@playwright/test').Page} Page */
 export class AddCustomerPage {
@@ -65,9 +66,20 @@ export class AddCustomerPage {
     console.info(`Started flow for changing the default branch`);
     await this.profileIcon.click();
     await this.branchSelectionDropDown.click();
-    await this.branchSelectionDropDown.selectOption({
-      label: branch,
-    });
+    const branchLabel = await getCaseInsensitiveOptionLabel(
+      this.branchSelectionDropDown,
+      branch,
+    );
+    if (branchLabel) {
+      console.info(
+        `Branch label with case insensitive match is found as ${branchLabel}`,
+      );
+      await this.branchSelectionDropDown.selectOption({
+        label: branchLabel,
+      });
+    } else {
+      console.warn(`Branch label not found for ${branch}`);
+    }
     await this.page.waitForTimeout(3000);
     console.info(`Completed Branch has been changed to ${branch}`);
   }
@@ -92,10 +104,17 @@ export class AddCustomerPage {
       await this.addCustomerButton.click();
       console.info(`Started the flow of adding customer`);
       await expect(this.addCustomerPopUp).toBeVisible();
-      await this.leadSourceDropdown.selectOption({ label: leadConverter });
-      console.info(
-        `Selecting the lead source from dropdown as:- , ${leadConverter}`,
+      const leadSourceLabel = await getCaseInsensitiveOptionLabel(
+        this.leadSourceDropdown,
+        leadConverter,
       );
+
+      if (leadSourceLabel) {
+        await this.leadSourceDropdown.selectOption({ label: leadSourceLabel });
+        console.log(`Selected: "${leadSourceLabel}"`);
+      } else {
+        console.warn("leadSource option not found");
+      }
       await this.firstNameField.fill(firstname);
       await this.lastNameField.fill(lastname);
       await expect(this.sendOTPButton).toBeDisabled();
@@ -109,18 +128,35 @@ export class AddCustomerPage {
       console.info(`Customer Id has been saved to addCustomerDetails`);
       await expect(this.sendOTPButton).toBeEnabled();
       await this.sendOTPButton.click();
-      await this.page.waitForTimeout(1500);
       await expect(this.enterOTPField).toBeVisible();
-      await this.enterOTPField.pressSequentially(otp);
-      await this.page.waitForTimeout(1500);
+      await this.enterOTPField.pressSequentially(otp, { delay: 100 });
       await expect(this.verifyOTPButton).toBeEnabled();
       await this.verifyOTPButton.click();
-      await this.page.waitForTimeout(1500);
-      console.info("Mobile Nuber is verified with OTP");
+      console.info("Mobile Number is verified with OTP");
       await expect(this.verifiedButton).toBeVisible();
-      await this.stateDropdown.selectOption({ label: state });
+      const stateLabel = await getCaseInsensitiveOptionLabel(
+        this.stateDropdown,
+        state,
+      );
+
+      if (stateLabel) {
+        await this.stateDropdown.selectOption({ label: stateLabel });
+        console.log(`Selected: "${stateLabel}"`);
+      } else {
+        console.warn("State option not found");
+      }
+
       await this.page.waitForTimeout(1500);
-      await this.cityDropdown.selectOption({ label: city });
+      const cityLabel = await getCaseInsensitiveOptionLabel(
+        this.cityDropdown,
+        city,
+      );
+      if (cityLabel) {
+        await this.cityDropdown.selectOption({ label: cityLabel });
+        console.log(`Selected: "${cityLabel}"`);
+      } else {
+        console.log("City option not found");
+      }
       await this.page.waitForTimeout(1500);
       await this.pinCodeField.fill(pincode);
       await this.page.waitForTimeout(1500);

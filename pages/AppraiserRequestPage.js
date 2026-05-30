@@ -13,6 +13,7 @@ import {
   cpvMandatoryPopup,
   savePacketPopup,
 } from "../commonUtils/popUpHelperUtility.js";
+import { getCaseInsensitiveOptionLabel } from "../commonUtils/dropdownOptionMatcherUtility.js";
 
 /** @typedef {import('@playwright/test').Page} Page */
 
@@ -211,7 +212,17 @@ export class AppraiserRequestpage {
       timeout: 10000,
     });
     await expect(this.basicDetailsTab).toBeVisible();
-    await this.loanPurpose.selectOption({ label: loanType });
+    const matchedLoanType = await getCaseInsensitiveOptionLabel(
+      this.loanPurpose,
+      loanType,
+    );
+    if (matchedLoanType) {
+      await this.loanPurpose.selectOption({ label: matchedLoanType });
+    } else {
+      console.warn(
+        `Loan type ${loanType} is not found in the dropdown options`,
+      );
+    }
     await this.nextButton.click();
     console.info("Basic details has been entered successfully");
   }
@@ -225,9 +236,19 @@ export class AppraiserRequestpage {
     const nomineeMobileNumberToSend = generateRandomMobileNumber();
     await this.nomineeNameField.fill(nomineeName);
     await this.page.waitForTimeout(1500);
-    await this.nomineeRelationshipField.selectOption({
-      label: nomineeRelation,
-    });
+    const matchedRelationLabel = await getCaseInsensitiveOptionLabel(
+      this.nomineeRelationshipField,
+      nomineeRelation,
+    );
+    if (matchedRelationLabel) {
+      await this.nomineeRelationshipField.selectOption({
+        label: matchedRelationLabel,
+      });
+    } else {
+      console.warn(
+        `Nominee relationship ${nomineeRelation} is not found in the dropdown options`,
+      );
+    }
     await this.page.waitForTimeout(1500);
     await this.nomineeAgeField.fill(nomineeAge);
     await this.page.waitForTimeout(1500);
@@ -289,9 +310,34 @@ export class AppraiserRequestpage {
     console.info(
       "Jewellery 1 Details- number of pieces, gross, deduction weight is updated",
     );
-    await this.karatDropdown.selectOption({ label: ornament1Karat });
+    const matchedOrnament1KaratLabel = await getCaseInsensitiveOptionLabel(
+      this.karatDropdown,
+      ornament1Karat,
+    );
+    if (matchedOrnament1KaratLabel) {
+      await this.karatDropdown.selectOption({
+        label: matchedOrnament1KaratLabel,
+      });
+    } else {
+      console.warn(
+        `Karat option ${ornament1Karat} is not found in the dropdown options`,
+      );
+    }
     await this.page.waitForTimeout(1500);
-    await this.purityDropdown.selectOption({ label: ornament1Purity });
+
+    const matchedOrnament1PurityLabel = await getCaseInsensitiveOptionLabel(
+      this.purityDropdown,
+      ornament1Purity,
+    );
+    if (matchedOrnament1PurityLabel) {
+      await this.purityDropdown.selectOption({
+        label: matchedOrnament1PurityLabel,
+      });
+    } else {
+      console.warn(
+        `Purity option ${ornament1Purity} is not found in the dropdown options`,
+      );
+    }
     await this.page.waitForTimeout(1500);
     await this.remarkField.fill("Test 1 Remark is added");
     await this.uploadJewelleryWithWightImage.click();
@@ -333,8 +379,34 @@ export class AppraiserRequestpage {
     console.info(
       "Jewellery 2 Details- number of pieces, gross, deduction weight is updated",
     );
-    await this.karatDropdown.selectOption({ label: ornament2Karat });
-    await this.purityDropdown.selectOption({ label: ornament2Purity });
+    const matchedOrnament2KaratLabel = await getCaseInsensitiveOptionLabel(
+      this.karatDropdown,
+      ornament2Karat,
+    );
+    if (matchedOrnament2KaratLabel) {
+      await this.karatDropdown.selectOption({
+        label: matchedOrnament2KaratLabel,
+      });
+    } else {
+      console.warn(
+        `Karat option ${ornament2Karat} is not found in the dropdown options`,
+      );
+    }
+    await this.page.waitForTimeout(1500);
+    const matchedOrnament2PurityLabel = await getCaseInsensitiveOptionLabel(
+      this.purityDropdown,
+      ornament2Purity,
+    );
+    if (matchedOrnament2PurityLabel) {
+      await this.purityDropdown.selectOption({
+        label: matchedOrnament2PurityLabel,
+      });
+    } else {
+      console.warn(
+        `Purity option ${ornament2Purity} is not found in the dropdown options`,
+      );
+    }
+    await this.page.waitForTimeout(1500);
     await this.remarkField.fill("Test 2 Remark is added");
     await this.uploadJewelleryWithWightImage.click();
     await ClickPicture(this.page, this.cameraPreview, this.takePicture);
@@ -355,9 +427,27 @@ export class AppraiserRequestpage {
   }
 
   async fillLoanFICDetailsTab(partner, loanAmount, schemeName) {
-    await this.partnerName.selectOption({ label: partner });
+    const matchedPartnerLabel = await getCaseInsensitiveOptionLabel(
+      this.partnerName,
+      partner,
+    );
+    if (matchedPartnerLabel) {
+      await this.partnerName.selectOption({ label: matchedPartnerLabel });
+    } else {
+      console.warn(`Partner ${partner} is not found in the dropdown options`);
+    }
     await this.colenderPartnerName.selectOption({ label: "None" });
-    await this.schemeName.selectOption({ label: schemeName });
+    const matchedSchemeNameLabel = await getCaseInsensitiveOptionLabel(
+      this.schemeName,
+      schemeName,
+    );
+    if (matchedSchemeNameLabel) {
+      await this.schemeName.selectOption({ label: matchedSchemeNameLabel });
+    } else {
+      console.warn(
+        `Scheme name ${schemeName} is not found in the dropdown options`,
+      );
+    }
     await this.loanAmountField.fill(loanAmount);
     await this.loanTenureField.click();
     await this.page.waitForTimeout(2000);

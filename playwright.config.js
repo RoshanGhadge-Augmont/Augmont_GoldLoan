@@ -109,7 +109,7 @@ console.log(`Credentials :  loginCred.${ENV}.json  (loaded)`);
 export default defineConfig({
   timeout: 120000,
   actionsTimeout: 60000,
-  slowMo: 1000,
+  slowMo: 500,
   testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: false,

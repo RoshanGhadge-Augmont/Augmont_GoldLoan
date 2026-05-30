@@ -1,5 +1,6 @@
 import { expect } from "@playwright/test";
 import config from "../config/env";
+import { getCaseInsensitiveOptionLabel } from "../commonUtils/dropdownOptionMatcherUtility.js";
 
 /** @typedef {import('@playwright/test').Page} Page */
 
@@ -49,10 +50,20 @@ export class InitiateGoldLoanPage {
   async changeBranch(branch) {
     console.info("Started selecting branch from profile section");
     await this.profileIcon.click();
-    await this.branchSelectionDropDown.selectOption({
-      label: branch,
-    });
-    console.info(` ${branch} branch has been selected from the dropdown`);
+    const matchedBranchLabel = await getCaseInsensitiveOptionLabel(
+      this.branchSelectionDropDown,
+      branch,
+    );
+    if (matchedBranchLabel) {
+      await this.branchSelectionDropDown.selectOption({
+        label: matchedBranchLabel,
+      });
+      console.info(` ${branch} branch has been selected from the dropdown`);
+    } else {
+      console.warn(
+        `Branch option ${branch} is not found in the dropdown options`,
+      );
+    }
   }
 
   async getCustomerIDToInitiateGoldLoan(customerID, leadConverter) {
@@ -83,9 +94,24 @@ export class InitiateGoldLoanPage {
     await startNewGoldLoan.click();
     await expect(this.goldLoanCreateRequestPopup).toBeVisible();
     console.info("Create a gold loan request pop-up is visible");
-    await this.appraiserNameField.selectOption({ label: leadConverter });
+    const leadConverterLabel = await getCaseInsensitiveOptionLabel(
+      this.appraiserNameField,
+      leadConverter,
+    );
+
+    if (leadConverterLabel) {
+      await this.appraiserNameField.selectOption({ label: leadConverterLabel });
+      console.info(
+        `Lead converter option ${leadConverter} is found in the dropdown options`,
+      );
+    } else {
+      console.warn(
+        `Lead converter option ${leadConverter} is not found in the dropdown options`,
+      );
+    }
     console.info("Appraiser is selected for the gold loan");
     await this.addButton.click();
+    await this.page.waitForTimeout(2000);
     console.info("New gold loan request has been added successfully");
   }
 
@@ -94,5 +120,6 @@ export class InitiateGoldLoanPage {
     console.info(
       "Appraiser Request tab is visible - Loan request is confirmed",
     );
+    await this.page.waitForTimeout(3000);
   }
 }

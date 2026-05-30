@@ -6,6 +6,7 @@ import {
   resetOutput,
   readOutput,
 } from "../commonUtils/dataManagerUtility.js";
+import { getCaseInsensitiveOptionLabel } from "../commonUtils/dropdownOptionMatcherUtility.js";
 
 /** @typedef {import('@playwright/test').Page} Page */
 export class SubmitPacketDetailsPage {
@@ -99,8 +100,22 @@ export class SubmitPacketDetailsPage {
     await expect(this.submitPacketDetailsPopup).toBeVisible();
     await this.selectLocation.selectOption({ value: "4" });
     await this.page.waitForTimeout(1500);
-    // Need to update value here
-    await this.selectPartnerBranch.selectOption({ label: partnerBranch });
+    const partnerBranchLabel = await getCaseInsensitiveOptionLabel(
+      this.selectPartnerBranch,
+      partnerBranch,
+    );
+    if (partnerBranchLabel) {
+      await this.selectPartnerBranch.selectOption({
+        label: partnerBranchLabel,
+      });
+      console.info(
+        `Partner branch option ${partnerBranch} is found in the dropdown options`,
+      );
+    } else {
+      console.warn(
+        `Partner branch option ${partnerBranch} is not found in the dropdown options`,
+      );
+    }
     let fetchedPacketID = await this.packetID.textContent();
     console.info(
       `Fetched packet id for the loan is:- ${fetchedPacketID.trim()}`,

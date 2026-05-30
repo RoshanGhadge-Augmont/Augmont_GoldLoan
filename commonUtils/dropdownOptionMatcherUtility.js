@@ -1,41 +1,49 @@
-// import { expect } from "@playwright/test";
+export async function getCaseInsensitiveOptionLabel(
+  dropdownLocator,
+  inputText,
+) {
+  // Normalize input: collapse all whitespace variants to a single space
+  const normalizeText = (text) =>
+    text
+      .replace(/[\u00A0\u200B\u200C\u200D\uFEFF]/g, " ") // replace special unicode spaces
+      .replace(/\s+/g, " ") // collapse multiple spaces
+      .trim();
 
-// function escapeRegex(value) {
-//   return String(value ?? "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-// }
+  const normalizedInput = normalizeText(inputText);
 
-// async function resolveOptionLabel(selectLocator, expectedValue) {
-//   await expect(selectLocator).toBeVisible();
+  // Escape regex special characters
+  const escapedValue = normalizedInput.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-//   const pattern =
-//     expectedValue instanceof RegExp
-//       ? new RegExp(
-//           expectedValue.source.replace(/^\^|\$$/g, ""),
-//           expectedValue.flags,
-//         )
-//       : new RegExp(`^${escapeRegex(expectedValue)}$`, "i");
+  // Create case-insensitive regex
+  const regex = new RegExp(`^${escapedValue}$`, "i");
 
-//   const matchingOptions = selectLocator.locator("option").filter({
-//     hasText: pattern,
-//   });
+  // Fetch all option labels with their values (for selectOption fallback)
+  const options = await dropdownLocator.locator("option").evaluateAll((opts) =>
+    opts.map((o) => ({
+      raw: o.textContent,
+      label: o.textContent
+        .replace(/[\u00A0\u200B\u200C\u200D\uFEFF]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim(),
+      value: o.value,
+    })),
+  );
 
-//   await expect
-//     .poll(async () => await matchingOptions.count(), {
-//       timeout: 10000,
-//       intervals: [250, 500, 1000, 2000],
-//     })
-//     .toBeGreaterThan(0);
+  console.log(
+    "All fetched Options (normalized):",
+    options.map((o) => o.label),
+  );
 
-//   const matchedOption = matchingOptions.first();
-//   const matchedLabel = (await matchedOption.textContent())?.trim();
+  // Find matched option
+  const matched = options.find((o) => regex.test(o.label));
 
-//   if (!matchedLabel) {
-//     throw new Error(
-//       `No dropdown option matched value: ${String(expectedValue)}`,
-//     );
-//   }
+  if (!matched) {
+    console.warn(
+      `[getCaseInsensitiveOptionLabel] No match found for "${inputText}". ` +
+        `Available options: ${options.map((o) => o.label).join(", ")}`,
+    );
+    return null;
+  }
 
-//   return matchedLabel;
-// }
-
-// export { resolveOptionLabel };
+  return matched.label;
+}
