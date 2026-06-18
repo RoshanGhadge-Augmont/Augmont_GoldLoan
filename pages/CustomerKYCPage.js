@@ -200,7 +200,7 @@ export class CustomerKYCPage {
     try {
       await this.locationPermissionOkButton.waitFor({
         state: "visible",
-        timeout: 3000,
+        timeout: 4000,
       });
       if (await this.locationPermissionOkButton.isVisible()) {
         await this.locationPermissionOkButton.click();
@@ -234,24 +234,23 @@ export class CustomerKYCPage {
     console.info(`searching the customer with its id :- ${customerId}`);
     await customerIdSearchField.fill(customerId.trim());
     await filterButton.click();
-    await this.page.waitForTimeout(2000);
     console.info(`Filtered customer with customer id as ${customerId}`);
-    await expect(filteredRow).toBeVisible();
-    await expect(applyKYCButton).toBeVisible();
+    await expect(filteredRow).toBeVisible({ timeout: 6000 });
+    await expect(applyKYCButton).toBeVisible({ timeout: 6000 });
     await applyKYCButton.click();
     console.info("Apply KYC button is clicked > Navigating to the KYC Page");
   }
 
   async waitForKYCBasicDetailsTab() {
-    await this.page.waitForURL(/kyc/);
-    // await expect(this.basicDetailsTab).toBeVisible();
+    await this.page.waitForURL(/kyc/, { waitUntil: "load" });
+    await expect(this.basicDetailsTab).toBeVisible();
     console.info("KYC Basic Detail Tab is visible");
   }
 
   async fillKYCBasicDetails() {
     const panCardNumber = generateRandomPAN();
     console.info(`Generated Random Pan Card Number is :- ${panCardNumber}`);
-    // Saving customer pan card details file
+    // // Saving customer pan card details file
     writeOutput("addCustomerDetails", { customerPanCardNumber: panCardNumber });
     await expect(this.basicDetailsTab).toBeVisible();
     await expect(this.pageSubHeading).toBeVisible();
@@ -259,13 +258,11 @@ export class CustomerKYCPage {
     await this.kycDocumentTypeDropdown.selectOption({ label: "PAN" });
     await uploadFile(this.page, this.kycAttachedFile, "panCard.jpg");
     console.info("Pan Card File Attached Successfully");
-    await this.kycPanCardNumber.fill(panCardNumber);
-    await this.page.waitForTimeout(2000);
-    await expect(this.kycNextButton).toBeVisible();
+    await this.kycPanCardNumber.fill(panCardNumber, { delay: 400 });
+    await expect(this.kycNextButton).toBeVisible({ timeout: 6000 });
     console.info("Customer KYC > Basic Details > Next button is clicked");
     await this.kycNextButton.click();
     await this.page.waitForTimeout(2000);
-    // Handling confirmation Popup for OSV Done
     await OSVDoneForCustomerPopup(
       this.page,
       this.confirmationPopUp,
@@ -282,7 +279,8 @@ export class CustomerKYCPage {
 
   async waitForKYCAddressAndIdentityTab() {
     // await this.page.waitForURL(/KYC/);
-    await expect(this.addressAndIdentityTab).toBeVisible();
+    await this.page.waitForURL(/kyc/, { waitUntil: "load" });
+    await expect(this.addressAndIdentityTab).toBeVisible({ timeout: 6000 });
     console.info("KYC Address & Identity Tab is visible");
     const permissionState = await this.page.evaluate(async () => {
       const result = await navigator.permissions.query({ name: "geolocation" });
@@ -306,7 +304,7 @@ export class CustomerKYCPage {
 
     await this.aadharCardNumberField.click();
     await this.aadharCardNumberField.pressSequentially(aadharNumberGenerated, {
-      delay: 500,
+      delay: 400,
     });
     console.info(
       "Generated aadhar number & filled successfully into field:- ",
@@ -317,10 +315,13 @@ export class CustomerKYCPage {
     });
 
     await this.keepResidentialandPermanentAddressSame.click();
+    await expect(this.keepResidentialandPermanentAddressSame).toBeChecked({
+      timeout: 4000,
+    });
     await this.addressProofDropdown.selectOption({ value: "2" });
-    await this.page.waitForTimeout(1500);
+    await expect(this.addressProofDropdown).toHaveValue("2", { timeout: 6000 });
+    await expect(this.permanantAddressField).toBeEnabled({ timeout: 6000 });
     await this.permanantAddressField.fill(permanantAddress);
-    await this.page.waitForTimeout(1500);
     const matchedStateLabel = await getCaseInsensitiveOptionLabel(
       this.stateDropdown,
       state,
@@ -332,7 +333,6 @@ export class CustomerKYCPage {
         `State option ${state} is not found in the dropdown options`,
       );
     }
-    await this.page.waitForTimeout(1500);
     const matchedCityLabel = await getCaseInsensitiveOptionLabel(
       this.cityDropdown,
       city,
@@ -342,9 +342,10 @@ export class CustomerKYCPage {
     } else {
       console.warn(`City option ${city} is not found in the dropdown options`);
     }
-    await this.page.waitForTimeout(1500);
-    await this.landMarkField.fill(landMark);
-    await this.page.waitForTimeout(1500);
+    await expect(this.landMarkField).toBeEnabled({ timeout: 6000 });
+    await this.landMarkField.fill(landMark, { delay: 100 });
+    await this.page.waitForTimeout(2000);
+    await expect(this.pinCodeField).toBeEnabled({ timeout: 6000 });
     const enteredPinCode = await this.pinCodeField.inputValue();
     if (!enteredPinCode.trim()) {
       await this.pinCodeField.pressSequentially("400706", { delay: 100 });
@@ -353,7 +354,9 @@ export class CustomerKYCPage {
       );
     }
 
-    await expect(this.addressAndIdentifyNextButton).toBeVisible();
+    await expect(this.addressAndIdentifyNextButton).toBeEnabled({
+      timeout: 6000,
+    });
     console.info(
       "Customer KYC > Address and Identity Details > Next button is visible",
     );
@@ -370,7 +373,8 @@ export class CustomerKYCPage {
   }
 
   async waitForPersonalDetailsTab() {
-    await expect(this.personalDetailsTab).toBeVisible();
+    await this.page.waitForURL(/kyc/);
+    await expect(this.personalDetailsTab).toBeVisible({ timeout: 6000 });
     console.info("Now Personal Details Tab is Visible");
   }
 
@@ -382,34 +386,34 @@ export class CustomerKYCPage {
     religion,
   ) {
     await this.uploadProfilePictureButton.click();
-    await this.page.waitForTimeout(3000);
+    await expect(this.cameraPreview).toBeVisible({ timeout: 6000 });
     await ClickPicture(this.page, this.cameraPreview, this.takePictureButton);
     console.info("Profile Picture is taken");
+    await expect(this.cameraPreview).toBeHidden({ timeout: 6000 });
     await this.calenderField.click();
-    await this.page.waitForTimeout(1000);
+    await expect(this.chooseYearandMonth).toBeVisible({ timeout: 6000 });
     await this.chooseYearandMonth.click();
-    await this.page.waitForTimeout(1000);
+    await expect(this.selectYear).toBeVisible({ timeout: 6000 });
     await this.selectYear.click();
-    await this.page.waitForTimeout(1000);
+    await expect(this.month).toBeVisible({ timeout: 6000 });
     await this.month.click();
-    await this.page.waitForTimeout(1000);
+    await expect(this.date).toBeVisible({ timeout: 6000 });
     await this.date.click();
-    await this.page.waitForTimeout(1000);
 
     this.maleRadioButton = this.page.getByText(gender, { exact: true });
 
     this.maritalStatusButton = this.page.getByText(maritalStatus, {
       exact: true,
     });
+    await expect(this.maleRadioButton).toBeVisible({ timeout: 6000 });
     await this.maleRadioButton.click();
     await this.maritalStatusButton.click();
     await this.selectOccupationInput.click();
     await this.selectOccupationInput.fill("Artisan");
-    await this.page.waitForTimeout(500);
-    await expect(this.artisanOccupation).toBeVisible();
+    await expect(this.artisanOccupation).toBeVisible({ timeout: 6000 });
     await this.artisanOccupation.click();
     console.info("Occupation is selected from the dropdown");
-    await this.page.waitForTimeout(1000);
+    await expect(this.motherNameField).toBeEnabled({ timeout: 6000 });
     await this.motherNameField.fill(motherName);
     const religionLabel = await getCaseInsensitiveOptionLabel(
       this.religionDropdown,
@@ -424,25 +428,17 @@ export class CustomerKYCPage {
       console.warn(`Religion label not found for ${religion}`);
     }
     await this.fatherNameField.fill(fatherName);
-    await this.page.waitForTimeout(1000);
+    await expect(this.fatherNameField).toBeEnabled({ timeout: 6000 });
     await this.physicallyChallengedDropdown.selectOption({ value: "1" });
-    await this.page.waitForTimeout(1000);
-    console.log("");
     await this.politicallyExposedDropdown.selectOption({ value: "1" });
     console.log("Politically exposed dropdown value has been selected");
-    await this.page.waitForTimeout(1000);
     await this.specialCategoryDropdown.selectOption({ value: "15" });
     console.log("Special Category is selected");
-    await this.page.waitForTimeout(1000);
     await this.annualIncomeDropdown.selectOption({ value: "3 to 5 Lakh" });
     console.log("Annual Income selected");
-    await this.page.waitForTimeout(1000);
     await this.qualificationDropdown.selectOption({ value: "5" });
     console.log("Qualification is selected");
-    await this.page.waitForTimeout(1000);
-    // await this.signatureAttachmentOption.setInputFiles(
-    //   path.resolve("test-data/Attachments/signature.png"),
-    // );
+    await this.page.waitForTimeout(1500);
     await uploadFile(
       this.page,
       this.signatureAttachmentOption,
@@ -454,34 +450,34 @@ export class CustomerKYCPage {
   }
 
   async waitForReviewandSubmitDetailsTab() {
+    await this.page.waitForURL(/kyc/);
     await expect(this.reviewandSubmitTab).toBeVisible();
     console.info("Now Step4  Review and Submit Details Tab is visible");
   }
 
   async submitDetails() {
-    await this.page.waitForTimeout(1000);
+    await expect(this.reviewandSubmitButton).toBeEnabled({ timeout: 6000 });
     await this.reviewandSubmitButton.click();
     console.info("Detals are reviewed and submitted");
   }
 
   async navigateToAppliedKYCPage() {
-    await this.page.waitForURL("**/admin/applied-kyc", { timeout: 3000 });
-    await this.page.waitForTimeout(1000);
+    await this.page.waitForURL("**/admin/applied-kyc", { timeout: 4000 });
     console.info("Navigated to the applied kyc page with edit");
   }
 
   async clickOnActionButton() {
+    await expect(this.actionButton).toBeEnabled({ timeout: 6000 });
     await this.actionButton.click();
-    await this.page.waitForTimeout(1000);
     console.info(
       `Applied KYC > Action button is pressed for ${this.customerID}`,
     );
   }
 
   async validateKYCDetails() {
-    await this.page.waitForURL("**/kyc-setting/edit-kyc**", { timeout: 3000 });
+    await this.page.waitForURL("**/kyc-setting/edit-kyc**", { timeout: 4000 });
+    await expect(this.reviewandSubmitButton).toBeEnabled({ timeout: 6000 });
     await this.reviewandSubmitButton.click();
-    await this.page.waitForTimeout(1500);
     console.info(
       "Validated all the details and clicked on review and submit button",
     );
@@ -495,9 +491,8 @@ export class CustomerKYCPage {
     await expect(selectedOption.trim()).toBe("Approved");
     await this.page.waitForTimeout(2000);
     await this.operationTeamKYCDropdown.selectOption({ label: "Approved" });
-    await this.page.waitForTimeout(1000);
     await this.submitButtonCustomerClassificationTab.click();
-    await this.page.waitForTimeout(2000);
     console.info("Approved from the customer classification tab for KYC");
+    await this.page.waitForLoadState("load");
   }
 }

@@ -109,7 +109,7 @@ console.log(`Credentials :  loginCred.${ENV}.json  (loaded)`);
 export default defineConfig({
   timeout: 120000,
   actionsTimeout: 60000,
-  slowMo: 500,
+  // slowMo: 500,
   testDir: "./tests",
   /* Run tests in files in parallel */
   fullyParallel: false,
@@ -159,6 +159,7 @@ export default defineConfig({
         launchOptions: {
           channel: "chrome",
           args: ["--start-maximized"],
+          navigationTimeout: 60000,
         },
       },
     },
@@ -169,6 +170,7 @@ export default defineConfig({
         ...devices["Desktop Firefox"],
         launchOptions: {
           args: ["--start-maximized"],
+          navigationTimeout: 60000,
         },
       },
     },
@@ -180,6 +182,7 @@ export default defineConfig({
         viewport: null,
         launchOptions: {
           args: ["--start-maximized"],
+          navigationTimeout: 60000,
         },
       },
     },

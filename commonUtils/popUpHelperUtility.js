@@ -6,7 +6,7 @@ export async function cpvMandatoryPopup(
   popUpOkButton,
 ) {
   try {
-    await cpvManadatorPopUp.waitFor({ state: "visible", timeout: 5000 });
+    await cpvManadatorPopUp.waitFor({ state: "visible", timeout: 6000 });
 
     if (await cpvManadatorPopUp.isVisible()) {
       await popUpOkButton.click();
@@ -32,7 +32,7 @@ export async function savePacketPopup(
   try {
     await page.waitForTimeout(1500);
 
-    await savePacketPopup.waitFor({ state: "visible", timeout: 4000 });
+    await savePacketPopup.waitFor({ state: "visible", timeout: 6000 });
 
     if (await savePacketPopup.isVisible()) {
       await savePacketYesButton.click();
@@ -56,7 +56,7 @@ export async function OSVDoneForCustomerPopup(
   yesButton,
 ) {
   try {
-    await confirmationPopUp.waitFor({ state: "visible", timeout: 3000 });
+    await confirmationPopUp.waitFor({ state: "visible", timeout: 6000 });
 
     if (await confirmationPopUp.isVisible()) {
       console.info("Confirmation gets visible ");

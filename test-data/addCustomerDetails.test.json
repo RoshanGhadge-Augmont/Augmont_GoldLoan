@@ -42,13 +42,13 @@
     "partnerUserMobileNumber": "8652849318"
   },
   "output": {
-    "customerId": "MPQEES9Z",
-    "customerMobileNumber": "9028731583",
-    "customerAadhdarNumber": "604589530740",
-    "customerPanCardNumber": "FJSJF4705F",
-    "nomineeMobileNumber": "7135217037",
-    "loanId": "CHAK-96831",
-    "disbursedPaymentTransactionId": "8P1WY8Z",
-    "packetID": "TESTD253"
+    "customerId": null,
+    "customerMobileNumber":null,
+    "customerAadhdarNumber": null,
+    "customerPanCardNumber": null,
+    "nomineeMobileNumber": null,
+    "loanId": null,
+    "disbursedPaymentTransactionId": null,
+    "packetID": null
   }
 }

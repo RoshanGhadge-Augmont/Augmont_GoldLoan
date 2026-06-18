@@ -80,7 +80,6 @@ export class AddCustomerPage {
     } else {
       console.warn(`Branch label not found for ${branch}`);
     }
-    await this.page.waitForTimeout(3000);
     console.info(`Completed Branch has been changed to ${branch}`);
   }
 
@@ -103,21 +102,24 @@ export class AddCustomerPage {
     try {
       await this.addCustomerButton.click();
       console.info(`Started the flow of adding customer`);
-      await expect(this.addCustomerPopUp).toBeVisible();
+      await expect(this.addCustomerPopUp).toBeVisible({ timeout: 6000 });
       const leadSourceLabel = await getCaseInsensitiveOptionLabel(
         this.leadSourceDropdown,
         leadConverter,
       );
 
       if (leadSourceLabel) {
-        await this.leadSourceDropdown.selectOption({ label: leadSourceLabel });
+        await this.leadSourceDropdown.selectOption({
+          label: leadSourceLabel,
+          timeout: 6000,
+        });
         console.log(`Selected: "${leadSourceLabel}"`);
       } else {
         console.warn("leadSource option not found");
       }
       await this.firstNameField.fill(firstname);
       await this.lastNameField.fill(lastname);
-      await expect(this.sendOTPButton).toBeDisabled();
+      await expect(this.sendOTPButton).toBeDisabled({ timeout: 6000 });
       const mobileNumberToSend = generateRandomMobileNumber();
       await this.mobileNumberField.fill(mobileNumberToSend);
       console.info(`Mobile Number Entered Is :- ${mobileNumberToSend}`);
@@ -126,44 +128,48 @@ export class AddCustomerPage {
         customerMobileNumber: mobileNumberToSend,
       });
       console.info(`Customer Id has been saved to addCustomerDetails`);
-      await expect(this.sendOTPButton).toBeEnabled();
+      await expect(this.sendOTPButton).toBeEnabled({ timeout: 6000 });
       await this.sendOTPButton.click();
-      await expect(this.enterOTPField).toBeVisible();
-      await this.enterOTPField.pressSequentially(otp, { delay: 100 });
-      await expect(this.verifyOTPButton).toBeEnabled();
+      await expect(this.enterOTPField).toBeVisible({ timeout: 6000 });
+      await this.enterOTPField.pressSequentially(otp, { delay: 400 });
+      await expect(this.verifyOTPButton).toBeEnabled({ timeout: 6000 });
       await this.verifyOTPButton.click();
       console.info("Mobile Number is verified with OTP");
-      await expect(this.verifiedButton).toBeVisible();
+      await expect(this.verifiedButton).toBeVisible({ timeout: 6000 });
       const stateLabel = await getCaseInsensitiveOptionLabel(
         this.stateDropdown,
         state,
       );
 
       if (stateLabel) {
-        await this.stateDropdown.selectOption({ label: stateLabel });
+        await this.stateDropdown.selectOption({
+          label: stateLabel,
+          timeout: 6000,
+        });
         console.log(`Selected: "${stateLabel}"`);
       } else {
         console.warn("State option not found");
       }
 
-      await this.page.waitForTimeout(1500);
       const cityLabel = await getCaseInsensitiveOptionLabel(
         this.cityDropdown,
         city,
       );
       if (cityLabel) {
-        await this.cityDropdown.selectOption({ label: cityLabel });
+        await this.cityDropdown.selectOption({
+          label: cityLabel,
+          timeout: 6000,
+        });
         console.log(`Selected: "${cityLabel}"`);
       } else {
         console.log("City option not found");
       }
-      await this.page.waitForTimeout(1500);
+      await expect(this.pinCodeField).toBeEnabled({ timeout: 6000 });
       await this.pinCodeField.fill(pincode);
-      await this.page.waitForTimeout(1500);
+      await expect(this.productDropdown).toBeEnabled({ timeout: 6000 });
       await this.productDropdown.selectOption({ label: "Gold Loan" });
-      await this.page.waitForTimeout(1500);
       await expect(this.statusDropdown).toHaveValue("1");
-      await this.page.waitForTimeout(1500);
+      await expect(this.statusDropdown).toBeEnabled({ timeout: 6000 });
       await expect(this.selectedStatus).toHaveText("Confirm");
       await this.addButton.click();
       console.info(`Added a new customer to system`);
@@ -175,14 +181,13 @@ export class AddCustomerPage {
 
   async fetchUserIdOfCustomer(pincode) {
     console.info(`Started flow of fetching UserId of customer from pincode`);
-    await expect(this.addCustomerPopUp).not.toBeVisible();
-    await this.page.waitForTimeout(2000);
+    await expect(this.addCustomerPopUp).not.toBeVisible({ timeout: 6000 });
     const customerRow = this.page
       .locator("tbody.ui-table-tbody > tr.ng-star-inserted")
       .filter({ hasText: pincode });
     console.info(`Searching the customer with its pincode : ${pincode}`);
     const customerIdCell = customerRow.locator("td span:nth-child(2)").first();
-    await expect(customerIdCell).toBeVisible();
+    await expect(customerIdCell).toBeVisible({ timeout: 6000 });
     const customerId = await customerIdCell.textContent();
     console.info("Newly Added Customer with it id:-", customerId.trim());
     writeOutput("addCustomerDetails", {
@@ -215,11 +220,11 @@ export class AddCustomerPage {
     console.info(`searching the customer with its id :- ${customerId}`);
     await customerIdSearchField.fill(customerId.trim());
     await filterButton.click();
-    await this.page.waitForTimeout(2000);
+    await expect(filteredRow).toBeVisible({ timeout: 6000 });
     console.info(`Filtered customer with customer id as ${customerId}`);
-    await expect(filteredRow).toBeVisible();
-    await expect(applyKYCButton).toBeVisible();
+    await expect(applyKYCButton).toBeVisible({ timeout: 6000 });
     await applyKYCButton.click();
     console.info(`Apply KYC button is clicked > Navigating to the KYC Page`);
+    await this.page.waitForLoadState("load");
   }
 }
